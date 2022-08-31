@@ -49,6 +49,6 @@ jobs:
       - name: Push images
         shell: bash
         run: |
-          docker tag obico-server_ml_api:latest ${{ steps.meta.output.tags }}
-          docker push ${{ steps.meta.output.tags }}
+          docker tag obico-server_ml_api:latest ${{ steps.meta.outputs.tags }}
+          docker push ${{ steps.meta.outputs.tags }}
 
