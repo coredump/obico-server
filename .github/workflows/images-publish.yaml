@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: ['release', 'release_test']
+    branches: ["release", "release_test"]
 
 env:
   REGISTRY: ghcr.io
@@ -35,20 +35,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build using docker compose
         shell: bash
         run: |
-          docker compose build 
-      
+          docker compose build
+
       - name: Push images
         shell: bash
         run: |
-          docker tag obico-server_ml_api:latest ${{ steps.meta.outputs.tags }}
-          docker push ${{ steps.meta.outputs.tags }}
-
+          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:${{ $GITHUB_BASE_REF }}
+          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:${{ $GITHUB_SHA }}
+          docker push ${{ env.REGISTRY }}/obico-server-ml_api:${{ $GITHUB_BASE_REF }}
