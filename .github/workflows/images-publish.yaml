@@ -43,6 +43,6 @@ jobs:
       - name: Push images
         shell: bash
         run: |
-          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:$GITHUB_BASE_REF
-          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:$GITHUB_SHA
-          docker push ${{ env.REGISTRY }}/obico-server-ml_api:$GITHUB_BASE_REF
+          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:${{ github.base_ref }}
+          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/obico-server-ml_api:${{ github.base_ref }}
