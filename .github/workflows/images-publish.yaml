@@ -45,6 +45,43 @@ jobs:
         env:
           FULL_NAME: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
         run: |
-          docker tag obico-server-ml_api:latest ${FULL_NAME}-ml_api:${{ github.ref_name }}
-          docker tag obico-server-ml_api:latest ${FULL_NAME}-ml_api:${{ github.sha }}
-          docker push ${FULL_NAME}-ml_api:${{ github.ref_name }}
+          for TARGET in ml_api web tasks; do
+            docker tag obico-server-${TARGET}:latest ${FULL_NAME}-${TARGET}:${{ github.ref_name }}
+            docker tag obico-server-${TARGET}:latest ${FULL_NAME}-${TARGET}:${{ github.sha }}
+            
+            docker push ${FULL_NAME}-${TARGET}:${{ github.ref_name }}
+          done
+
+
+  build-and-push-image-arm:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_DEFAULT_PLATFORM: linux/amd64
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build using docker compose
+        shell: bash
+        run: |
+          docker compose build 
