@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  build-and-push-image-amd64:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,7 +42,9 @@ jobs:
       
       - name: Push images
         shell: bash
+        env:
+          FULL_NAME: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
         run: |
-          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:${{ github.ref_name }}
-          docker tag obico-server-ml_api:latest ${{ env.REGISTRY }}/obico-server-ml_api:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/obico-server-ml_api:${{ github.ref_name }}
+          docker tag obico-server-ml_api:latest ${{ $FULL_NAME }}-ml_api:${{ github.ref_name }}
+          docker tag obico-server-ml_api:latest ${{ $FULL_NAME }}-ml_api:${{ github.sha }}
+          docker push ${{ $FULL_NAME }}-ml_api:${{ github.ref_name }}
